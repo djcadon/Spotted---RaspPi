@@ -1,39 +1,56 @@
 import RPi.GPIO as GPIO
 import time
 
-SIG_PIN = 16  # BCM 23
+# Use BCM numbering (GPIO16 = pin 36 on Pi)
+SIG_PIN = 16
 
 def setup():
-    GPIO.setmode(GPIO.BOARD)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
     GPIO.setup(SIG_PIN, GPIO.OUT)
+    GPIO.output(SIG_PIN, GPIO.LOW)
+    time.sleep(0.05)  # Allow sensor to settle
 
 def measure_distance():
+    # Set SIG as output to send trigger pulse
+    GPIO.setup(SIG_PIN, GPIO.OUT)
     GPIO.output(SIG_PIN, GPIO.LOW)
     time.sleep(0.002)
     GPIO.output(SIG_PIN, GPIO.HIGH)
-    time.sleep(0.01)
+    time.sleep(0.01)  # 10 microseconds pulse
     GPIO.output(SIG_PIN, GPIO.LOW)
 
+    # Set SIG as input to receive echo
     GPIO.setup(SIG_PIN, GPIO.IN)
-    
-    start_time = time.time()
+
+    # Wait for echo start
+    timeout = time.time() + 0.04  # 40ms timeout
     while GPIO.input(SIG_PIN) == 0:
-        start_time = time.time()
+        if time.time() > timeout:
+            return -1
+        start = time.time()
 
+    # Wait for echo end
+    timeout = time.time() + 0.04
     while GPIO.input(SIG_PIN) == 1:
-        end_time = time.time()
+        if time.time() > timeout:
+            return -1
+        end = time.time()
 
-    duration = end_time - start_time
-    distance_cm = duration * 17150
+    duration = end - start
+    distance_cm = duration * 17150  # Speed of sound calculation
     return round(distance_cm, 2)
 
 try:
     setup()
     while True:
-        dist = measure_distance()
-        print(f"Distance: {dist} cm")
+        distance = measure_distance()
+        if distance == -1:
+            print("Timeout - no echo received")
+        else:
+            print(f"Distance: {distance} cm")
         time.sleep(1)
 
 except KeyboardInterrupt:
-    print("Exiting...")
     GPIO.cleanup()
+    print("\nProgram stopped by user")
