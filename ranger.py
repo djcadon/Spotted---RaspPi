@@ -4,7 +4,7 @@ import time
 # Use BCM numbering (GPIO16 = pin 36 on Pi)
 SIG_PIN = 16
 
-def setup():
+def setup_sensor():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(SIG_PIN, GPIO.OUT)
@@ -41,16 +41,4 @@ def measure_distance():
     distance_cm = duration * 17150  # Speed of sound calculation
     return round(distance_cm, 2)
 
-try:
-    setup()
-    while True:
-        distance = measure_distance()
-        if distance == -1:
-            print("Timeout - no echo received")
-        else:
-            print(f"Distance: {distance} cm")
-        time.sleep(1)
-
-except KeyboardInterrupt:
-    GPIO.cleanup()
-    print("\nProgram stopped by user")
+def occupied():

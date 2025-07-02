@@ -61,7 +61,7 @@
 <body>
     <div class="code-display" id="codeDisplay">____</div>
     <div class="numpad">
-        {% for row in [[1,2,3],[4,5,6],[7,8,9],['←',0,'OK']] %}
+        {% for row in [[1,2,3],[4,5,6],[7,8,9],['←',0,'SEND']] %}
         {% for key in row %}
         <button onclick="press('{{ key }}')">{{ key }}</button>
         {% endfor %}
@@ -74,9 +74,9 @@
         function press(key) {
             if (key === '←') {
                 code = code.slice(0, -1);
-            } else if (key === 'OK') {
+            } else if (key === 'SEND') {
                 if (code.length === 4) {
-                    fetch("/submit", {
+                    fetch("127.0.0.1:5000/submit", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ code: code })
