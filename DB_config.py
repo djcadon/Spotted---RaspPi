@@ -16,5 +16,4 @@ try:
 except Exception as e:
     print("Connection Failed: ", e)
 
-
 cur = conn.cursor()

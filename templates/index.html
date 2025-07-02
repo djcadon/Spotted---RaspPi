@@ -1,8 +1,8 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Numpad</title>
     <style>
         body {
@@ -20,9 +20,22 @@
         .code-display {
             font-size: 5vh;
             letter-spacing: 1vw;
-            margin-bottom: 2vh;
+            margin-bottom: 0.5vh;
             color: #0f0;
         }
+
+        #errorMessage {
+            color: red;
+            font-size: 3vh;
+            height: 4vh;
+            opacity: 1;
+            transition: opacity 1.5s ease-out;
+            margin-bottom: 1vh;
+        }
+
+            #errorMessage.hidden {
+                opacity: 0;
+            }
 
         .numpad {
             display: grid;
@@ -60,6 +73,8 @@
 </head>
 <body>
     <div class="code-display" id="codeDisplay">____</div>
+    <div id="errorMessage" class="hidden"></div>
+
     <div class="numpad">
         {% for row in [[1,2,3],[4,5,6],[7,8,9],['←',0,'SEND']] %}
         {% for key in row %}
@@ -72,20 +87,40 @@
         let code = "";
 
         function press(key) {
+            const errorEl = document.getElementById("errorMessage");
+
+            function showError(message) {
+                errorEl.textContent = message;
+                errorEl.classList.remove("hidden");
+
+                setTimeout(() => {
+                    errorEl.classList.add("hidden");
+                }, 2000);
+            }
+
             if (key === '←') {
                 code = code.slice(0, -1);
+                errorEl.textContent = "";
+                errorEl.classList.add("hidden");
             } else if (key === 'SEND') {
                 if (code.length === 4) {
-                    fetch("127.0.0.1:5000/submit", {
+                    fetch("/submit", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ code: code })
                     }).then(() => {
                         code = "";
+                        errorEl.textContent = "";
+                        errorEl.classList.add("hidden");
+                        updateDisplay();
                     });
+                } else {
+                    showError("Enter a 4-digit code.");
                 }
             } else if (code.length < 4) {
                 code += key;
+                errorEl.textContent = "";
+                errorEl.classList.add("hidden");
             }
 
             updateDisplay();
