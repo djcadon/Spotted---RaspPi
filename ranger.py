@@ -49,3 +49,4 @@ def check_occupied():
 
 def cleanup_sensor():
     GPIO.cleanup()
+    return
