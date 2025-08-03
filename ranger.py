@@ -45,6 +45,7 @@ def check_occupied():
     distance = measure_distance()
     if distance == -1:
         return False  # sensor error or no reading
+    print(distance)
     return 10 < distance < 300
 
 def cleanup_sensor():
