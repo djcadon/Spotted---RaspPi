@@ -39,13 +39,13 @@ def measure_distance():
 
     duration = end - start
     distance_cm = duration * 17150  # Speed of sound calculation
+    print(distance_cm)
     return round(distance_cm, 2)
 
 def check_occupied():
     distance = measure_distance()
     if distance == -1:
         return False  # sensor error or no reading
-    print(distance)
     return 10 < distance < 300
 
 def cleanup_sensor():
