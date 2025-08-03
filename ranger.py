@@ -28,14 +28,14 @@ def measure_distance():
     while GPIO.input(SIG_PIN) == 0:
         if time.time() > timeout:
             return -1
-        start = time.time()
+    start = time.time()
 
     # Wait for echo end
     timeout = time.time() + 0.04
     while GPIO.input(SIG_PIN) == 1:
         if time.time() > timeout:
             return -1
-        end = time.time()
+    end = time.time()
 
     duration = end - start
     distance_cm = duration * 17150  # Speed of sound calculation
