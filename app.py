@@ -115,7 +115,7 @@ def submit_code():
         LIMIT 1
     """, (RASP_ID, now, now))
     reservation = cur.fetchone()
-    #print(reservation) #Uncomment to check reservation data
+    print(reservation) #Uncomment to check reservation data
     if reservation is None:
         return jsonify(success=False, message="No active reservation found"), 404
     reservation_id = reservation['id']
@@ -127,7 +127,7 @@ def submit_code():
         LIMIT 1
     """, (reservation_id,))
     auth_row = cur.fetchone()
-    #print(auth_row) #Uncomment to check parking_authentication
+    print(auth_row) #Uncomment to check parking_authentication
     #No active reservation
     if auth_row is None:
         return jsonify(success=False, message="No auth code found for this reservation"), 404
