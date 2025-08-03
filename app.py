@@ -29,7 +29,6 @@ def monitor_sensor_loop():
         now = datetime.now(timezone.utc)
         #Parking spot is occupied
         if check_occupied():
-            print("spot full occupied")
             #Checking if reservation is verfied already
             if active_reservation:
                 if now > reservation_end_time:
@@ -66,7 +65,6 @@ def monitor_sensor_loop():
                         check_violation(owner_id, renter_id, reservation_id, active_reservation)
         #Sleep for a while because spot is empty
         else:
-            print("spot empty")
             time.sleep(10)
 
 #Violation checking and sending to database
@@ -144,6 +142,7 @@ def submit_code():
         """, (reservation_id,))
         conn.commit()
         return jsonify(success=True, message="Code verified successfully")
+    #Auth code is incorrect for reservation
     #Auth code is incorrect for reservation
     else:
         return jsonify(success=False, message="Invalid code"), 401

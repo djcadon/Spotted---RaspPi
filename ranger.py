@@ -39,7 +39,6 @@ def measure_distance():
 
     duration = end - start
     distance_cm = duration * 17150  # Speed of sound calculation
-    print(distance_cm)
     return round(distance_cm, 2)
 
 def check_occupied():
