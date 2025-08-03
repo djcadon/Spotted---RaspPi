@@ -29,6 +29,7 @@ def monitor_sensor_loop():
         now = datetime.now(timezone.utc)
         #Parking spot is occupied
         if check_occupied():
+            print("spot full occupied")
             #Checking if reservation is verfied already
             if active_reservation:
                 if now > reservation_end_time:
@@ -65,6 +66,7 @@ def monitor_sensor_loop():
                         check_violation(owner_id, renter_id, reservation_id, active_reservation)
         #Sleep for a while because spot is empty
         else:
+            print("spot empty")
             time.sleep(10)
 
 #Violation checking and sending to database
